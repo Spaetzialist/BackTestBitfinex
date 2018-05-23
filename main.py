@@ -1,8 +1,6 @@
 import utils
-import pickle
+
 from pylab import *
-with open("data", "rb") as fp:
-    l = pickle.load(fp)
 
 #MTS    int    millisecond time stamp
 #OPEN    float    First execution during the time frame
@@ -22,6 +20,7 @@ highList = []
 lowList = []
 donchianHigh = []
 donchianLow = []
+account = 1000
 
 
 #--------functions--------
@@ -32,8 +31,8 @@ def plotData():
     markers_on_y = closeList[200000]
 
     plt.plot(t, closeList, '-', color="orange", markersize=2)
-    plt.plot(t, highList, '-', color="yellow", markersize=1)
-    plt.plot(t, lowList, '-', color="yellow", markersize=1)
+    #plt.plot(t, highList, '-', color="yellow", markersize=1)
+    #plt.plot(t, lowList, '-', color="yellow", markersize=1)
     plt.plot(t, donchianHigh, '-', color="blue", markersize=1)
     plt.plot(t, donchianLow, '-', color="blue", markersize=1)
     plt.plot(markers_on_x, markers_on_y, 'v', color="green")
@@ -43,13 +42,13 @@ def plotData():
 
 
 #--------main--------
-print ("1")
+l = utils.loadData("data")
 closeList, highList, lowList = utils.fillLists(l)
-print ("2")
-donchianHigh, donchianLow = utils.buildDonchian(100, highList, lowList)
-print ("3")
+donchianHigh, donchianLow = utils.buildDonchian(1440, highList, lowList)
+#utils.saveData("dhighFile1440",donchianHigh)
+#utils.saveData("dlowFile1440",donchianLow)
 plotData()
-print ("4")
+
 
 #-----------------
 #!/usr/bin/python3

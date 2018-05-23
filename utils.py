@@ -1,3 +1,5 @@
+import pickle
+from pylab import *
 def buildDonchian(numberOfCandles, high, low):
     donchianHighList = []
     donchianLowList = []
@@ -8,7 +10,7 @@ def buildDonchian(numberOfCandles, high, low):
         else:
             donchianHighList.append(0)
             donchianLowList.append(0)
-        if (i%1000 == 0):
+        if (i%10000 == 0):
             print (i)
     return donchianHighList,donchianLowList
 
@@ -24,3 +26,20 @@ def fillLists(l):
     for e in l:
         lowList.append(float(e[4]))
     return closeList, highList, lowList
+
+def saveData(file,data):
+    # Store data (serialize)
+    with open(file, 'wb') as handle:
+        pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+def loadData(file):
+    # Load data (deserialize)
+    unserialized_data = None
+    with open(file, 'rb') as handle:
+        unserialized_data = pickle.load(handle)
+    return unserialized_data
+
+def plotData(data):
+    t = arange(0.0, len(data), 1)
+    plt.plot(t, data, '-', color="orange", markersize=2)
+    plt.show()
