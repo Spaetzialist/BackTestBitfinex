@@ -1,5 +1,6 @@
 import pickle
 from pylab import *
+
 def buildDonchian(numberOfCandles, high, low):
     donchianHighList = []
     donchianLowList = []
@@ -43,3 +44,9 @@ def plotData(data):
     t = arange(0.0, len(data), 1)
     plt.plot(t, data, '-', color="orange", markersize=2)
     plt.show()
+
+def checkLong(close, highList,index, timebase):
+    if (close > highList[int(index/timebase)*timebase]):
+        return True
+    else:
+        return False

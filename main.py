@@ -20,15 +20,20 @@ highList = []
 lowList = []
 donchianHigh = []
 donchianLow = []
-account = 1000
-
+gAccount = 100000
+gAmount = 0
+gStop = None
+buyDict = {}
 
 #--------functions--------
 def plotData():
     t = arange(0.0, len(closeList), 1)
     th = arange(0.0, len(donchianHigh), 1)
-    markers_on_x = [200000]
-    markers_on_y = closeList[200000]
+    markers_on_x = buyDict.keys()
+    markers_on_y = []
+    for i in buyDict.keys():
+        markers_on_y.append(buyDict[i]*1.1)
+
 
     plt.plot(t, closeList, '-', color="orange", markersize=2)
     #plt.plot(t, highList, '-', color="yellow", markersize=1)
@@ -40,14 +45,47 @@ def plotData():
     plt.show()
 
 
+def buyLong(amount, price, fee, stop, index):
+    global gAccount
+    global gAmount
+    global gStop
+
+    money = amount*price*(1+(2*fee/100))
+    if (money<=gAccount):
+        gAccount = gAccount - money
+        gAmount = amount
+        gStop = stop
+        buyDict[index]=price
+
+
+#config
+AMOUNTOFCONTRACTS = 1
+FEE = 0.26
+DONCHIANDAYS = 7
+STOPDAYS = 3
+TIMEBASE = 1440
+
 
 #--------main--------
 l = utils.loadData("data")
+donchianHigh = utils.loadData("dhighFile"+str(DONCHIANDAYS*TIMEBASE))
+donchianLow  = utils.loadData("dlowFile"+str(DONCHIANDAYS*TIMEBASE))
 closeList, highList, lowList = utils.fillLists(l)
-donchianHigh, donchianLow = utils.buildDonchian(1440, highList, lowList)
-#utils.saveData("dhighFile1440",donchianHigh)
-#utils.saveData("dlowFile1440",donchianLow)
+#donchianHigh, donchianLow = utils.buildDonchian(DONCHIANDAYS*TIMEBASE, highList, lowList)
+#utils.saveData("dhighFile"+str(DONCHIANDAYS*TIMEBASE),donchianHigh)
+#utils.saveData("dlowFile"+str(DONCHIANDAYS*TIMEBASE),donchianLow)
+
+index = 0
+for element in closeList:
+    if ((index > (DONCHIANDAYS*TIMEBASE+STOPDAYS))and (gAmount == 0)):
+        if (utils.checkLong(element, donchianHigh,index,TIMEBASE)):
+            buyLong(AMOUNTOFCONTRACTS,element,FEE,1234, index)
+            print ("INDEX = "+ str(index))
+    index = index + 1
+
 plotData()
+
+
 
 
 #-----------------
