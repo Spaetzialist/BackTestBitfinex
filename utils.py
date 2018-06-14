@@ -50,3 +50,12 @@ def checkLong(close, highList,index, timebase):
         return True
     else:
         return False
+
+def setStopLow(donchianLowStop,index, stopdays, timebase):
+    if ((index > stopdays * timebase) and (index < len(donchianLowStop))):
+        ticksAktuelleCandle = index % timebase
+        ticksLetzteXCandles = stopdays * timebase
+        stopLow = min(donchianLowStop[index - ticksAktuelleCandle - ticksLetzteXCandles:index - ticksAktuelleCandle])
+        return stopLow
+    else:
+        return -1
