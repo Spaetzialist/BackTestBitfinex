@@ -126,6 +126,7 @@ for price in closeList:
 plotData()
 
 #todo:
+#ta-lib integration
 #Stop checken
 #Stop nachziehen
 #sell einfügen in main buy and sell
