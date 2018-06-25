@@ -56,6 +56,9 @@ def setStopLow(donchianLowStop,index, stopdays, timebase):
         ticksAktuelleCandle = index % timebase
         ticksLetzteXCandles = stopdays * timebase
         stopLow = min(donchianLowStop[index - ticksAktuelleCandle - ticksLetzteXCandles:index - ticksAktuelleCandle])
+        #print (donchianLowStop[index - ticksAktuelleCandle - ticksLetzteXCandles:index - ticksAktuelleCandle])
+        print (ticksAktuelleCandle)
+        print (ticksLetzteXCandles)
         return stopLow
     else:
         return -1

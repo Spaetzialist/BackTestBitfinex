@@ -108,5 +108,14 @@ class MyTestCase(unittest.TestCase):
         e = utils.setStopLow(donchianLowStop, index, stopdays, timebase)
         self.assertEqual(e,2)
 
+    def test_stopLow11(self):
+        donchianLowStop = [0,1, 2,3, 4,5, 6,7, 8,9, 10]
+        stopdays = 2
+        timebase = 2
+        for index in donchianLowStop:
+            print("---" + str(index) + "---")
+            e = utils.setStopLow(donchianLowStop, index, stopdays, timebase)
+            #self.assertEqual(e, 2)
+
 if __name__ == '__main__':
     unittest.main()

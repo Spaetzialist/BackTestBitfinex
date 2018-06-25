@@ -45,7 +45,7 @@ def plotData():
     markers_sell_x = sellDict.keys()
     markers_sell_y = []
     for i in sellDict.keys():
-        markers_sell_y.append(sellDict[i] * 1)
+        markers_sell_y.append(sellDict[i] * 0.95)
 
     markers_stop_x = stopDict.keys()
     markers_stop_y = []
@@ -60,7 +60,7 @@ def plotData():
     plt.plot(t, donchianHighStop, '-', color="green", markersize=1)
     plt.plot(t, donchianLowStop, '-', color="red", markersize=1)
     plt.plot(markers_buy_x, markers_buy_y, 'v', color="green")
-    plt.plot(markers_sell_x, markers_sell_y, 'x', color="red")
+    plt.plot(markers_sell_x, markers_sell_y, '^', color="red")
     plt.plot(markers_stop_x, markers_stop_y, 'x', color="black")
     #plt.xlim(0,2000)
     plt.show()
@@ -115,14 +115,14 @@ donchianLowStop  = utils.loadData("dlowFile"+str(STOPDAYS*TIMEBASE))
 
 #---buy and sell---
 index = 0
-for price in closeList:
+for price in closeList[:66800]:
     #trailing Stop Long
     if (state == State.LONG):
         stop = utils.setStopLow(donchianLowStop, index, STOPDAYS, TIMEBASE)
         gStop = stop
-        #stopDict[index] = stop
+        stopDict[int(index/TIMEBASE)*TIMEBASE] = stop
     #buyLong
-    if ((index > (DONCHIANDAYS*TIMEBASE+STOPDAYS))and (gAmount == 0)):
+    if ((index > (DONCHIANDAYS*TIMEBASE+STOPDAYS))and (state == State.EQUAL)):
         if (utils.checkLong(price, donchianHigh,index,TIMEBASE)):
             stop = utils.setStopLow(donchianLowStop,index, STOPDAYS, TIMEBASE)
             stopDict[int(index/TIMEBASE)*TIMEBASE] = stop
@@ -131,8 +131,10 @@ for price in closeList:
             state = State.LONG
     index = index + 1
     #sellLong
-    if ((gAmount > 0) and (price<gStop)):
+    if ((state == State.LONG) and (price<gStop)):
         sellLong(gAmount, price, FEE, index)
+        state = State.EQUAL
+
 
 
 plotData()
