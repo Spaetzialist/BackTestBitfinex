@@ -1,7 +1,7 @@
 import utils
 
 from pylab import *
-
+from enum import Enum
 #MTS    int    millisecond time stamp
 #OPEN    float    First execution during the time frame
 #CLOSE    float    Last execution during the time frame
@@ -22,12 +22,16 @@ donchianHigh = []
 donchianLow = []
 donchianHighStop = []
 donchianLowStop = []
-gAccount = 100000
+gAccount = 100000000
 gAmount = 0
 gStop = None
 buyDict = {}
 stopDict = {}
 sellDict = {}
+class State(Enum):
+    EQUAL = 0
+    LONG = 1
+    SHORT = 2
 
 #--------functions--------
 def plotData():
@@ -72,7 +76,6 @@ def buyLong(amount, price, fee, stop, index):
         gAccount = gAccount - amount*price*(1+(fee/100))
         gAmount = amount
         gStop = stop
-        stopDict[index]=stop
         buyDict[index]=price
 
 def sellLong(amount, price, fee, index):
@@ -90,6 +93,7 @@ FEE = 0.26
 DONCHIANDAYS = 7
 STOPDAYS = 3
 TIMEBASE = 1440
+state = State.EQUAL
 
 
 #--------main--------
@@ -112,21 +116,28 @@ donchianLowStop  = utils.loadData("dlowFile"+str(STOPDAYS*TIMEBASE))
 #---buy and sell---
 index = 0
 for price in closeList:
+    #trailing Stop Long
+    if (state == State.LONG):
+        stop = utils.setStopLow(donchianLowStop, index, STOPDAYS, TIMEBASE)
+        gStop = stop
+        #stopDict[index] = stop
     #buyLong
     if ((index > (DONCHIANDAYS*TIMEBASE+STOPDAYS))and (gAmount == 0)):
         if (utils.checkLong(price, donchianHigh,index,TIMEBASE)):
             stop = utils.setStopLow(donchianLowStop,index, STOPDAYS, TIMEBASE)
+            stopDict[int(index/TIMEBASE)*TIMEBASE] = stop
             buyLong(AMOUNTOFCONTRACTS,price,FEE,stop, index)
             print ("INDEX = "+ str(index))
+            state = State.LONG
     index = index + 1
     #sellLong
     if ((gAmount > 0) and (price<gStop)):
         sellLong(gAmount, price, FEE, index)
 
+
 plotData()
 
 #todo:
 #ta-lib integration
-#Stop checken
 #Stop nachziehen
 #sell einfügen in main buy and sell
