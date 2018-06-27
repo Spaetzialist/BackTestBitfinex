@@ -16,6 +16,38 @@ def buildDonchian(numberOfCandles, high, low):
     return donchianHighList,donchianLowList
 
 
+def buildDonchian2(days, timebase, high, low):
+    donchianHighList = []
+    donchianLowList = []
+    numberOfCandles = days*timebase
+    for i in range(0, len(high)):
+        if (i>numberOfCandles):
+            if (i%timebase ==0):
+                k = 0
+                maxValue = max(high[i - numberOfCandles :i -1])
+                minValue = min(low[i - numberOfCandles:i - 1])
+                while (k<timebase):
+                    donchianHighList.append(maxValue)
+                    donchianLowList.append(minValue)
+                    k = k+1
+        else:
+            donchianHighList.append(0)
+            donchianLowList.append(0)
+    return donchianHighList,donchianLowList
+
+def setStopLow(donchianLowStop,index, stopdays, timebase):
+    if ((index > stopdays * timebase) and (index < len(donchianLowStop))):
+        ticksAktuelleCandle = index % timebase
+        ticksLetzteXCandles = stopdays * timebase
+        stopLow = min(donchianLowStop[index - ticksAktuelleCandle - ticksLetzteXCandles:index - ticksAktuelleCandle])
+        #print (donchianLowStop[index - ticksAktuelleCandle - ticksLetzteXCandles:index - ticksAktuelleCandle])
+        #print (ticksAktuelleCandle)
+        #print (ticksLetzteXCandles)
+        return stopLow
+    else:
+        return -1
+
+
 def fillLists(l):
     closeList = []
     highList = []
@@ -51,14 +83,4 @@ def checkLong(close, highList,index, timebase):
     else:
         return False
 
-def setStopLow(donchianLowStop,index, stopdays, timebase):
-    if ((index > stopdays * timebase) and (index < len(donchianLowStop))):
-        ticksAktuelleCandle = index % timebase
-        ticksLetzteXCandles = stopdays * timebase
-        stopLow = min(donchianLowStop[index - ticksAktuelleCandle - ticksLetzteXCandles:index - ticksAktuelleCandle])
-        #print (donchianLowStop[index - ticksAktuelleCandle - ticksLetzteXCandles:index - ticksAktuelleCandle])
-        print (ticksAktuelleCandle)
-        print (ticksLetzteXCandles)
-        return stopLow
-    else:
-        return -1
+

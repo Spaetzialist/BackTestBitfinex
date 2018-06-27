@@ -113,7 +113,7 @@ class MyTestCase(unittest.TestCase):
         stopdays = 2
         timebase = 2
         for index in donchianLowStop:
-            print("---" + str(index) + "---")
+            #print("---" + str(index) + "---")
             e = utils.setStopLow(donchianLowStop, index, stopdays, timebase)
             #self.assertEqual(e, 2)
 
