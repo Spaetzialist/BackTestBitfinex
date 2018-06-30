@@ -47,6 +47,17 @@ def setStopLow(donchianLowStop,index, stopdays, timebase):
     else:
         return -1
 
+def setStopHigh(donchianHighStop,index, stopdays, timebase):
+    if ((index > stopdays * timebase) and (index < len(donchianHighStop))):
+        ticksAktuelleCandle = index % timebase
+        ticksLetzteXCandles = stopdays * timebase
+        stopHigh = max(donchianHighStop[index - ticksAktuelleCandle - ticksLetzteXCandles:index - ticksAktuelleCandle])
+        #print (donchianLowStop[index - ticksAktuelleCandle - ticksLetzteXCandles:index - ticksAktuelleCandle])
+        #print (ticksAktuelleCandle)
+        #print (ticksLetzteXCandles)
+        return stopHigh
+    else:
+        return -1
 
 def fillLists(l):
     closeList = []
@@ -83,4 +94,8 @@ def checkLong(close, highList,index, timebase):
     else:
         return False
 
-
+def checkShort(close, lowList,index, timebase):
+    if (close < lowList[int(index/timebase)*timebase]):
+        return True
+    else:
+        return False
