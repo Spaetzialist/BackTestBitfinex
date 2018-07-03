@@ -26,7 +26,7 @@ DONCHIANDAYS = 7
 STOPDAYS = 3
 TIMEBASE = 1440
 state = State.EQUAL
-STARTMONEY = 10000
+STARTMONEY = 100
 AMOUNTOFMONEY = STARTMONEY
 #--------global--------
 
@@ -110,10 +110,11 @@ def buyLong(amount, price, fee, stop, index):
 
     #money = amount*price*(1+(2*fee/100))
     if (amount<=gAccountMoney):
-        gAccountMoney = amount
+        gAccountMoney = gAccountMoney - amount
         gAmountAssets = amount/price*(1-(fee/100))
         gStop = stop
         buyLongDict[index]=price
+        print("go Long: " + str(price) + " (" + str(round(gAmountAssets,2)) + " assets)")
     else:
         state = State.EQUAL
 
@@ -125,6 +126,8 @@ def sellLong(amount, price, fee, index):
     gAccountMoney = gAccountMoney + amount * price * (1 - (fee / 100))
     gAmountAssets = gAmountAssets - amount
     sellLongDict[index] = price
+    print("exit Long: " + str(price))
+    print("Money: " + str(round(gAccountMoney,2)))
 
 def sellShort(amount, price, fee, stop, index):
     global gAccountMoney
@@ -152,7 +155,7 @@ def buyShort(amount, price, fee, index):
     buyShortDict[index] = price
     print("exit Short: " + str(price))
     print ("profit (w/o fee): " + str(round((gEntryPrice/price-1)*100,2)) + "%")
-    print ("Money: " + str(gAccountMoney))
+    print ("Money: " + str(round(gAccountMoney,2)))
 
 #--------main--------
 #---load Data---
@@ -192,6 +195,7 @@ if 1:
             # buyLong
             if ((index > ((DONCHIANDAYS + 1) * TIMEBASE)) and (state == State.EQUAL)):
                 if (utils.checkLong(price, donchianHigh, index, TIMEBASE)):
+                    print("--------------------")
                     stop = donchianLowStop[index - TIMEBASE]
                     stopDict[int(index / TIMEBASE) * TIMEBASE] = stop
                     buyLong(AMOUNTOFMONEY, price, FEE, stop, index)
@@ -199,7 +203,7 @@ if 1:
                     gEntryPrice = price
                     state = State.LONG
 
-        if 0:
+        if 1:
             #trailing Stop Short
             if (state == State.SHORT):
                 stop = utils.setStopHigh(donchianHighStop, index, 1, TIMEBASE)
@@ -226,9 +230,9 @@ if 1:
 
 
     profit = gAmountAssets*closeList[index]+gAccountMoney
-    print ("Amount = "+ str(profit) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)")
+    print ("Amount = "+ str(round(profit,2)) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)")
     print("\nAssets = " + str(gAmountAssets))
-    print("Money = " + str(gAccountMoney))
+    print("Money = " + str(round(gAccountMoney,2)))
 plotData()
 
 #todo:
