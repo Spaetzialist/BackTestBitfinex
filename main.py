@@ -46,6 +46,8 @@ sellLongDict = {}
 sellShortDict = {}
 buyShortDict = {}
 gEntryPrice = 0
+gEntryMoney = 0
+gProfitLossArray = []
 
 
 #--------functions--------
@@ -101,20 +103,25 @@ def plotData():
     #plt.xlim(0,2000)
     plt.show()
 
+    #plot profit
+    tprofit = arange(0.0, len(gProfitLossArray), 1)
+    plt.bar(tprofit, gProfitLossArray)
+    plt.show()
 
 def buyLong(amount, price, fee, stop, index):
     global gAccountMoney
     global gAmountAssets
     global gStop
     global state
-
+    global gEntryMoney
     #money = amount*price*(1+(2*fee/100))
     if (amount<=gAccountMoney):
+        gEntryMoney = gAccountMoney
         gAccountMoney = gAccountMoney - amount
         gAmountAssets = amount/price*(1-(fee/100))
         gStop = stop
         buyLongDict[index]=price
-        print("go Long: " + str(price) + " (" + str(round(gAmountAssets,2)) + " assets)")
+        print("go Long("  + str(index) +"): " + str(price) + " (" + str(round(gAmountAssets,3)) + " assets)")
     else:
         state = State.EQUAL
 
@@ -122,11 +129,15 @@ def sellLong(amount, price, fee, index):
     global gAccountMoney
     global gAmountAssets
     global gStop
+    global gProfitLossArray
+    global gEntryMoney
 
     gAccountMoney = gAccountMoney + amount * price * (1 - (fee / 100))
     gAmountAssets = gAmountAssets - amount
     sellLongDict[index] = price
-    print("exit Long: " + str(price))
+    gProfitLossArray.append(round(((gAccountMoney/gEntryMoney)-1)*100,2))
+    print("exit Long("  + str(index) +"): " + str(price))
+    print("profit: " + str(gProfitLossArray[-1]) + "%")
     print("Money: " + str(round(gAccountMoney,2)))
 
 def sellShort(amount, price, fee, stop, index):
@@ -134,13 +145,15 @@ def sellShort(amount, price, fee, stop, index):
     global gAmountAssets
     global gStop
     global state
+    global gEntryMoney
 
     if (amount<=gAccountMoney):
-        gAccountMoney = gAccountMoney + amount *(1-(fee/100))
+        gEntryMoney = gAccountMoney
+        gAccountMoney = gAccountMoney + amount #*(1-(fee/100))
         gAmountAssets = gAmountAssets-amount/price*(1-(fee/100))
         gStop = stop
         sellShortDict[index]=price
-        print ("go Short: " + str(price) + " ("+ str(-gAmountAssets)+ " assets)")
+        print ("go Short("  + str(index) +"): " + str(price) + " ("+ str(round(-gAmountAssets,3))+ " assets)")
 
     else:
         state = State.EQUAL
@@ -149,17 +162,21 @@ def buyShort(amount, price, fee, index):
     global gAccountMoney
     global gAmountAssets
     global gStop
+    global gEntryMoney
+    global gProfitLossArray
 
     gAccountMoney = gAccountMoney - (-amount) * price * (1 + (fee / 100))
     gAmountAssets = gAmountAssets - amount
     buyShortDict[index] = price
-    print("exit Short: " + str(price))
-    print ("profit (w/o fee): " + str(round((gEntryPrice/price-1)*100,2)) + "%")
+    gProfitLossArray.append(round(((gAccountMoney / gEntryMoney) - 1) * 100, 2))
+    print("exit Short("  + str(index) +"): " + str(price))
+    #print ("profit (w/o fee): " + str(round((gEntryPrice/price-1)*100,2)) + "%")
+    print ("profit: " + str(gProfitLossArray[-1]) + "%")
     print ("Money: " + str(round(gAccountMoney,2)))
 
 #--------main--------
 #---load Data---
-l = utils.loadData("data")
+l = utils.loadData("data160101_180708")
 closeList, highList, lowList = utils.fillLists(l)
 
 #donchianHigh = utils.loadData("dhighFile"+str(DONCHIANDAYS*TIMEBASE))
@@ -180,8 +197,8 @@ donchianHighStop, donchianLowStop = utils.buildDonchian2(STOPDAYS,TIMEBASE, high
 if 1:
     index = 0
     for price in closeList[:len(donchianHigh)]:
-        AMOUNTOFMONEY = gAccountMoney
         if 1:
+            AMOUNTOFMONEY = gAccountMoney
             #trailing Stop Long
             if (state == State.LONG):
                 stop = utils.setStopLow(donchianLowStop, index, 1, TIMEBASE)
@@ -199,11 +216,11 @@ if 1:
                     stop = donchianLowStop[index - TIMEBASE]
                     stopDict[int(index / TIMEBASE) * TIMEBASE] = stop
                     buyLong(AMOUNTOFMONEY, price, FEE, stop, index)
-                    print("INDEX LONG = " + str(index))
+                    #print("INDEX LONG = " + str(index))
                     gEntryPrice = price
                     state = State.LONG
-
         if 1:
+            AMOUNTOFMONEY = gAccountMoney
             #trailing Stop Short
             if (state == State.SHORT):
                 stop = utils.setStopHigh(donchianHighStop, index, 1, TIMEBASE)
@@ -236,5 +253,4 @@ if 1:
 plotData()
 
 #todo:
-#Long prüfen
-#Ausgabe Gewinn/Verlust und weitere Statistiken
+#Schleife über verschiedene Parameter und Files
