@@ -253,4 +253,7 @@ if 1:
 plotData()
 
 #todo:
+#Account Money Plotten
+#Alles in ein Diagramm plotten mindestens Money und Profit
+#hodl gegenüberstellen
 #Schleife über verschiedene Parameter und Files
