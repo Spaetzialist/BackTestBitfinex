@@ -206,8 +206,8 @@ closeList, highList, lowList = utils.fillLists(l)
 dd = 7
 file = open('output'+baseData+'.txt','w')
 while dd < 8:
-    trailingPercentage = 0.1
-    while trailingPercentage < 0.11:
+    trailingPercentage = 0.01
+    while trailingPercentage < 0.20:
         DONCHIANDAYS = dd
         donchianHigh, donchianLow = utils.buildDonchian2(DONCHIANDAYS, TIMEBASE, highList, lowList)
         donchianHighStop, donchianLowStop = utils.buildDonchian2(STOPDAYS, TIMEBASE, highList, lowList)
@@ -223,11 +223,14 @@ while dd < 8:
                     AMOUNTOFMONEY = gAccountMoney
                     #trailing Stop Long
                     if (state == State.LONG):
+                        store = False
                         if (price > gMaxPrice):
-                            gStop = stop = price * (1-trailingPercentage)
-                        else:
-                            gStop = stop = price * (1 - gMaxPrice)
-                        stopDict[int(index/TIMEBASE)*TIMEBASE] = stop
+                            gMaxPrice = price
+                            store = True
+                        gStop = stop = gMaxPrice * (1 - trailingPercentage)
+                        if(store):
+                            #print (stop)
+                            stopDict[index] = stop
 
                     #sellLong
                     if ((state == State.LONG) and (price<gStop)):
@@ -235,23 +238,26 @@ while dd < 8:
                         state = State.EQUAL
                     # buyLong
                     if ((index > ((DONCHIANDAYS + 1) * TIMEBASE)) and (state == State.EQUAL)):
-                        if (utils.checkLong(price, donchianHigh, index, TIMEBASE)):
-                            print("---------"+str(dd)+'|'+str(trailingPercentage)+"-----------")
-                            stop = donchianLowStop[index - TIMEBASE]
+                        if (utils.checkLong(price, donchianHigh, gMaxPrice, index, TIMEBASE)):
+                            print("----L-----"+str(dd)+'|'+str(trailingPercentage)+"-----------")
+                            stop = price * (1 - trailingPercentage)
                             stopDict[int(index / TIMEBASE) * TIMEBASE] = stop
                             buyLong(AMOUNTOFMONEY, price, FEE, stop, index)
                             #print("INDEX LONG = " + str(index))
                             gEntryPrice = price
+                            gMaxPrice = price
                             state = State.LONG
                 if 1:
                     AMOUNTOFMONEY = gAccountMoney
                     #trailing Stop Short
                     if (state == State.SHORT):
+                        store = False
                         if (price < gMaxPrice):
-                            gStop = stop = price * (1+trailingPercentage)
-                        else:
-                            gStop = stop = gMaxPrice * (1 + trailingPercentage)
-                        stopDict[int(index/TIMEBASE)*TIMEBASE] = stop
+                            gMaxPrice = price
+                            store = True
+                        gStop = stop = gMaxPrice * (1 + trailingPercentage)
+                        if (store):
+                            stopDict[int(index/TIMEBASE)*TIMEBASE] = stop
 
                     # buyShort
                     if ((state == State.SHORT) and (price > gStop)):
@@ -260,24 +266,30 @@ while dd < 8:
 
                     # sellShort
                     if ((index > ((DONCHIANDAYS + 1) * TIMEBASE)) and (state == State.EQUAL)):
-                        if (utils.checkShort(price, donchianLow, index, TIMEBASE)):
-                            print("---------" + str(dd) + '|' + str(trailingPercentage) + "-----------")
-                            stop = donchianHighStop[index - TIMEBASE]
+
+                        if (utils.checkShort(price,  donchianLow, gMaxPrice, index, TIMEBASE)):
+                            print("-----S----" + str(dd) + '|' + str(trailingPercentage) + "-----------")
+                            if (index == 378289):
+                                print ("")
+                            stop = price * (1+trailingPercentage)
                             stopDict[int(index / TIMEBASE) * TIMEBASE] = stop
                             state = State.SHORT
                             sellShort(AMOUNTOFMONEY, price, FEE, stop, index)
                             #print("INDEX SHORT = " + str(index))
                             gEntryPrice = price
+                            gMaxPrice = price
 
                 index = index + 1
 
 
             profit = gAmountAssets*closeList[index]+gAccountMoney
-            print ("Amount = "+ str(round(profit,2)) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)")
-            print("\nAssets = " + str(gAmountAssets))
+            print ("\n\nAmount = "+ str(round(profit,2)) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)")
+            print ("Number of Trades: " + str(len(gProfitLossArray)))
+            print("Assets = " + str(gAmountAssets))
             print("Money = " + str(round(gAccountMoney,2)))
+            file.write("Number of Trades: " + str(len(gProfitLossArray)))
             file.write("Amount = "+ str(round(profit,2)) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)\n")
-            trailingPercentage = trailingPercentage + 0.01
+            trailingPercentage = trailingPercentage + 0.005
         #plotData()
     dd = dd + 1
 file.close()

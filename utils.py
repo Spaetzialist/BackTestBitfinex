@@ -88,14 +88,30 @@ def plotData(data):
     plt.plot(t, data, '-', color="orange", markersize=2)
     plt.show()
 
-def checkLong(close, highList,index, timebase):
-    if (close > highList[int(index/timebase)*timebase]):
-        return True
+def checkLong(close, highList, maxV, index, timebase):
+    high = highList[int(index/timebase)*timebase]
+    if (high>maxV):
+        if (close > high):
+            return True
+        else:
+            return False
     else:
-        return False
+        if (close > maxV):
+            return True
+        else:
+            return False
 
-def checkShort(close, lowList,index, timebase):
-    if (close < lowList[int(index/timebase)*timebase]):
-        return True
+
+def checkShort(close, lowList, maxV, index, timebase):
+    low = lowList[int(index / timebase) * timebase]
+    if (low<maxV):
+        if (close < low):
+            return True
+        else:
+            return False
     else:
-        return False
+        if (close < maxV):
+            return True
+        else:
+            return False
+
