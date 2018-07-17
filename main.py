@@ -277,7 +277,7 @@ while dd < 20:
 file.close()
 
 #todo:
-#Account Money Plotten
+#Anzahl Trades mit ausgeben
 #Alles in ein Diagramm plotten mindestens Money und Profit
 #hodl gegenüberstellen
 #Schleife über verschiedene Parameter und Files
