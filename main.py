@@ -1,5 +1,5 @@
 import utils
-
+import time
 from pylab import *
 from enum import Enum
 #MTS    int    millisecond time stamp
@@ -60,7 +60,7 @@ def plotData():
     markers_buy_x = buyLongDict.keys()
     markers_buy_y = []
     for i in buyLongDict.keys():
-        markers_buy_y.append(buyLongDict[i]*1.05)
+        markers_buy_y.append(buyLongDict[i]*1)
 
     markers_sell_x = sellLongDict.keys()
     markers_sell_y = []
@@ -70,7 +70,7 @@ def plotData():
     markers_buyShort_x = buyShortDict.keys()
     markers_buyShort_y = []
     for i in buyShortDict.keys():
-        markers_buyShort_y.append(buyShortDict[i]*1.05)
+        markers_buyShort_y.append(buyShortDict[i]*1)
 
     markers_sellShort_x = sellShortDict.keys()
     markers_sellShort_y = []
@@ -201,10 +201,10 @@ closeList, highList, lowList = utils.fillLists(l)
 #utils.saveData("dlowFile"+str(STOPDAYS*TIMEBASE),donchianLowStop)
 
 dd = 1
-file = open('output'+baseData+'.txt','w')
+file = open('output'+baseData+ '_'+time.strftime("%Y%m%d%H%M%S")+'.txt','w')
 while dd < 20:
     sd = 1
-    while sd < 10:
+    while sd < 2:
         DONCHIANDAYS = dd
         STOPDAYS = sd
         donchianHigh, donchianLow = utils.buildDonchian2(DONCHIANDAYS, TIMEBASE, highList, lowList)
@@ -226,7 +226,7 @@ while dd < 20:
                         stopDict[int(index/TIMEBASE)*TIMEBASE] = stop
 
                     #sellLong
-                    if ((state == State.LONG) and (price<gStop)):
+                    if ((state == State.LONG) and ((price<gStop) or (index % TIMEBASE == 0))):
                         sellLong(gAmountAssets, price, FEE, index)
                         state = State.EQUAL
                     # buyLong
@@ -248,7 +248,7 @@ while dd < 20:
                         stopDict[int(index/TIMEBASE)*TIMEBASE] = stop
 
                     # buyShort
-                    if ((state == State.SHORT) and (price > gStop)):
+                    if ((state == State.SHORT) and ((price > gStop) or (index % TIMEBASE == 0))):
                         buyShort(gAmountAssets, price, FEE, index)
                         state = State.EQUAL
 
