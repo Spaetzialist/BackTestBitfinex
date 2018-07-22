@@ -203,9 +203,9 @@ closeList, highList, lowList = utils.fillLists(l)
 #utils.saveData("dhighFile"+str(STOPDAYS*TIMEBASE),donchianHighStop)
 #utils.saveData("dlowFile"+str(STOPDAYS*TIMEBASE),donchianLowStop)
 
-dd = 7
+dd = 1
 file = open('output'+baseData+'.txt','w')
-while dd < 8:
+while dd < 11:
     trailingPercentage = 0.01
     while trailingPercentage < 0.20:
         DONCHIANDAYS = dd
@@ -284,12 +284,13 @@ while dd < 8:
 
             profit = gAmountAssets*closeList[index]+gAccountMoney
             print ("\n\nAmount = "+ str(round(profit,2)) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)")
-            print ("Number of Trades: " + str(len(gProfitLossArray)))
+            print ("\nNumber of Trades: " + str(len(gProfitLossArray)))
             print("Assets = " + str(gAmountAssets))
             print("Money = " + str(round(gAccountMoney,2)))
             file.write("Number of Trades: " + str(len(gProfitLossArray)))
             file.write("Amount = "+ str(round(profit,2)) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)\n")
             trailingPercentage = trailingPercentage + 0.005
+            gProfitLossArray = []
         #plotData()
     dd = dd + 1
 file.close()

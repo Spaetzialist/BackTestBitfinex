@@ -1,0 +1,76 @@
+----7|0.01----
+Number of Trades: 707Amount = 8.91(-91.09%)
+----7|0.015----
+Number of Trades: 507Amount = 21.35(-78.65%)
+----7|0.02----
+Number of Trades: 382Amount = 45.75(-54.25%)
+----7|0.025----
+Number of Trades: 314Amount = 61.98(-38.02%)
+----7|0.030000000000000002----
+Number of Trades: 271Amount = 67.14(-32.86%)
+----7|0.035----
+Number of Trades: 228Amount = 99.09(-0.91%)
+----7|0.04----
+Number of Trades: 194Amount = 163.43(63.43%)
+----7|0.045----
+Number of Trades: 179Amount = 146.87(46.87%)
+----7|0.049999999999999996----
+Number of Trades: 162Amount = 171.26(71.26%)
+----7|0.05499999999999999----
+Number of Trades: 144Amount = 291.32(191.32%)
+----7|0.05999999999999999----
+Number of Trades: 129Amount = 342.36(242.36%)
+----7|0.06499999999999999----
+Number of Trades: 117Amount = 435.96(335.96%)
+----7|0.06999999999999999----
+Number of Trades: 107Amount = 541.88(441.88%)
+----7|0.075----
+Number of Trades: 101Amount = 549.62(449.62%)
+----7|0.08----
+Number of Trades: 94Amount = 604.68(504.68%)
+----7|0.085----
+Number of Trades: 89Amount = 573.12(473.12%)
+----7|0.09000000000000001----
+Number of Trades: 86Amount = 476.16(376.16%)
+----7|0.09500000000000001----
+Number of Trades: 85Amount = 361.34(261.34%)
+----7|0.10000000000000002----
+Number of Trades: 79Amount = 442.43(342.43%)
+----7|0.10500000000000002----
+Number of Trades: 76Amount = 386.51(286.51%)
+----7|0.11000000000000003----
+Number of Trades: 73Amount = 216.96(116.96%)
+----7|0.11500000000000003----
+Number of Trades: 68Amount = 284.15(184.15%)
+----7|0.12000000000000004----
+Number of Trades: 66Amount = 248.98(148.98%)
+----7|0.12500000000000003----
+Number of Trades: 63Amount = 263.5(163.5%)
+----7|0.13000000000000003----
+Number of Trades: 57Amount = 422.64(322.64%)
+----7|0.13500000000000004----
+Number of Trades: 53Amount = 571.6(471.6%)
+----7|0.14000000000000004----
+Number of Trades: 50Amount = 1059.73(959.73%)
+----7|0.14500000000000005----
+Number of Trades: 49Amount = 913.86(813.86%)
+----7|0.15000000000000005----
+Number of Trades: 49Amount = 693.58(593.58%)
+----7|0.15500000000000005----
+Number of Trades: 47Amount = 696.54(596.54%)
+----7|0.16000000000000006----
+Number of Trades: 47Amount = 501.88(401.88%)
+----7|0.16500000000000006----
+Number of Trades: 46Amount = 462.12(362.12%)
+----7|0.17000000000000007----
+Number of Trades: 46Amount = 343.35(243.35%)
+----7|0.17500000000000007----
+Number of Trades: 45Amount = 304.06(204.06%)
+----7|0.18000000000000008----
+Number of Trades: 43Amount = 323.78(223.78%)
+----7|0.18500000000000008----
+Number of Trades: 40Amount = 362.81(262.81%)
+----7|0.19000000000000009----
+Number of Trades: 37Amount = 498.57(398.57%)
+----7|0.1950000000000001----
+Number of Trades: 36Amount = 433.26(333.26%)
