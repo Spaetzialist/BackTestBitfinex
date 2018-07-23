@@ -60,16 +60,19 @@ def setStopHigh(donchianHighStop,index, stopdays, timebase):
         return -1
 
 def fillLists(l):
+    dateList = []
     closeList = []
     highList = []
     lowList = []
+    for e in l:
+        dateList.append(float(e[0]))
     for e in l:
         closeList.append(float(e[2]))
     for e in l:
         highList.append(float(e[3]))
     for e in l:
         lowList.append(float(e[4]))
-    return closeList, highList, lowList
+    return closeList, highList, lowList, dateList
 
 def saveData(file,data):
     # Store data (serialize)
