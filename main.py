@@ -29,7 +29,7 @@ state = State.EQUAL
 STARTMONEY = 100
 AMOUNTOFMONEY = STARTMONEY
 #--------global--------
-
+dateList = []
 closeList = []
 highList = []
 lowList = []
@@ -182,10 +182,10 @@ def buyShort(amount, price, fee, index):
 
 #--------main--------
 #---load Data---
-baseData = "data160101_180708"
-#baseData = "data_REP_180101_180710"
+#baseData = "data160101_180708"
+baseData = "data_REP_180101_180710"
 l = utils.loadData(baseData)
-closeList, highList, lowList = utils.fillLists(l)
+dateList, closeList, highList, lowList = utils.fillLists(l)
 
 #donchianHigh = utils.loadData("dhighFile"+str(DONCHIANDAYS*TIMEBASE))
 #donchianLow  = utils.loadData("dlowFile"+str(DONCHIANDAYS*TIMEBASE))
@@ -200,11 +200,11 @@ closeList, highList, lowList = utils.fillLists(l)
 #utils.saveData("dhighFile"+str(STOPDAYS*TIMEBASE),donchianHighStop)
 #utils.saveData("dlowFile"+str(STOPDAYS*TIMEBASE),donchianLowStop)
 
-dd = 1
+dd = 7
 file = open('output'+baseData+'.txt','w')
-while dd < 20:
-    sd = 1
-    while sd < 10:
+while dd < 8:
+    sd = 3
+    while sd < 4:
         DONCHIANDAYS = dd
         STOPDAYS = sd
         donchianHigh, donchianLow = utils.buildDonchian2(DONCHIANDAYS, TIMEBASE, highList, lowList)
@@ -272,7 +272,7 @@ while dd < 20:
             print("Money = " + str(round(gAccountMoney,2)))
             file.write("Amount = "+ str(round(profit,2)) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)\n")
         sd = sd + 1
-        #plotData()
+        plotData()
     dd = dd + 1
 file.close()
 

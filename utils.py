@@ -63,13 +63,13 @@ def fillLists(l):
     closeList = []
     highList = []
     lowList = []
+    dateList = []
     for e in l:
+        dateList.append(str(datetime.datetime.fromtimestamp(e[0] / 1000)))
         closeList.append(float(e[2]))
-    for e in l:
         highList.append(float(e[3]))
-    for e in l:
         lowList.append(float(e[4]))
-    return closeList, highList, lowList
+    return dateList,closeList, highList, lowList
 
 def saveData(file,data):
     # Store data (serialize)
