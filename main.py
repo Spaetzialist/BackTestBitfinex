@@ -1,5 +1,5 @@
 import utils
-
+import time
 from pylab import *
 from enum import Enum
 #MTS    int    millisecond time stamp
@@ -49,11 +49,13 @@ gEntryPrice = 0
 gEntryMoney = 0
 gProfitLossArray = []
 gMoneyArray = []
+gDatesArray = []
 
 
 #--------functions--------
 def plotData():
     t = arange(0.0, len(closeList), 1)
+    #t = dateList
     tD = arange(0, len(donchianHigh), 1)
     tS = arange(0, len(donchianHighStop), 1)
 
@@ -82,8 +84,7 @@ def plotData():
     for i in stopDict.keys():
         markers_stop_y.append(stopDict[i])
 
-
-
+    plt.figure(1)
     plt.plot(t, closeList, '-', color="orange", markersize=2)
     #plt.plot(t, highList, '-', color="yellow", markersize=1)
     #plt.plot(t, lowList, '-', color="yellow", markersize=1)
@@ -101,13 +102,16 @@ def plotData():
     for e in tDayArrayX:
         tDayArrayY.append(closeList[int(e)])
     plt.plot(tDayArrayX ,tDayArrayY , '|', color="black")
+    plt.xticks(rotation=90)
     #plt.xlim(0,2000)
-    plt.show()
+
 
     #plot profit
-    tprofit = arange(0.0, len(gProfitLossArray), 1)
-    plt.bar(tprofit, gProfitLossArray)
-    plt.plot(tprofit, gMoneyArray, '-')
+    plt.figure(2)
+    plt.bar(gDatesArray, gProfitLossArray)
+    plt.plot(gDatesArray, gMoneyArray, '-')
+    plt.xticks(rotation=90)
+
     plt.show()
 
 def buyLong(amount, price, fee, stop, index):
@@ -132,12 +136,14 @@ def sellLong(amount, price, fee, index):
     global gAmountAssets
     global gStop
     global gProfitLossArray
+    global gDatesArray
     global gEntryMoney
     global gMoneyArray
 
     gAccountMoney = gAccountMoney + amount * price * (1 - (fee / 100))
     gAmountAssets = gAmountAssets - amount
     sellLongDict[index] = price
+    gDatesArray.append(dateList[index][:10])
     gProfitLossArray.append(round(((gAccountMoney/gEntryMoney)-1)*100,2))
     gMoneyArray.append(round(gAccountMoney,2))
     print("exit Long("  + str(index) +"): " + str(price))
@@ -173,6 +179,7 @@ def buyShort(amount, price, fee, index):
     gAccountMoney = gAccountMoney - (-amount) * price * (1 + (fee / 100))
     gAmountAssets = gAmountAssets - amount
     buyShortDict[index] = price
+    gDatesArray.append(dateList[index][:10])
     gProfitLossArray.append(round(((gAccountMoney / gEntryMoney) - 1) * 100, 2))
     gMoneyArray.append(round(gAccountMoney, 2))
     print("exit Short("  + str(index) +"): " + str(price))
@@ -201,7 +208,7 @@ dateList, closeList, highList, lowList = utils.fillLists(l)
 #utils.saveData("dlowFile"+str(STOPDAYS*TIMEBASE),donchianLowStop)
 
 dd = 7
-file = open('output'+baseData+'.txt','w')
+file = open('output'+baseData+ '_'+time.strftime("%Y%m%d%H%M%S")+'.txt','w')
 while dd < 8:
     sd = 3
     while sd < 4:
@@ -270,14 +277,16 @@ while dd < 8:
             print ("Amount = "+ str(round(profit,2)) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)")
             print("\nAssets = " + str(gAmountAssets))
             print("Money = " + str(round(gAccountMoney,2)))
+            print ("# of Trades: " + str(len(gProfitLossArray)))
             file.write("Amount = "+ str(round(profit,2)) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)\n")
+            file.write("# of Trades: " + str(len(gProfitLossArray)))
         sd = sd + 1
         plotData()
     dd = dd + 1
 file.close()
 
 #todo:
-#Anzahl Trades mit ausgeben
 #Alles in ein Diagramm plotten mindestens Money und Profit
+#Anzahl Trades mit ausgeben
 #hodl gegenüberstellen
-#Schleife über verschiedene Parameter und Files
+#Schleife über verschiedene Files
