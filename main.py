@@ -50,6 +50,7 @@ gEntryMoney = 0
 gProfitLossArray = []
 gMoneyArray = []
 gDatesArray = []
+global l
 
 
 #--------functions--------
@@ -189,8 +190,8 @@ def buyShort(amount, price, fee, index):
 
 #--------main--------
 #---load Data---
-#baseData = "data160101_180708"
-baseData = "data_REP_180101_180710"
+baseData = "data160101_180708"
+#baseData = "data_REP_180101_180710"
 l = utils.loadData(baseData)
 dateList, closeList, highList, lowList = utils.fillLists(l)
 
@@ -207,11 +208,11 @@ dateList, closeList, highList, lowList = utils.fillLists(l)
 #utils.saveData("dhighFile"+str(STOPDAYS*TIMEBASE),donchianHighStop)
 #utils.saveData("dlowFile"+str(STOPDAYS*TIMEBASE),donchianLowStop)
 
-dd = 7
+dd = 5/24
 file = open('output'+baseData+ '_'+time.strftime("%Y%m%d%H%M%S")+'.txt','w')
-while dd < 8:
-    sd = 3
-    while sd < 4:
+while dd < 1:
+    sd = 1/24
+    while (sd < 1):
         DONCHIANDAYS = dd
         STOPDAYS = sd
         donchianHigh, donchianLow = utils.buildDonchian2(DONCHIANDAYS, TIMEBASE, highList, lowList)
@@ -224,6 +225,7 @@ while dd < 8:
         if 1:
             index = 0
             for price in closeList[:len(donchianHigh)]:
+            #for price in closeList[:100000]:
                 if 1:
                     AMOUNTOFMONEY = gAccountMoney
                     #trailing Stop Long
@@ -273,16 +275,17 @@ while dd < 8:
                 index = index + 1
 
 
-            profit = gAmountAssets*closeList[index]+gAccountMoney
+            profit = gAmountAssets*closeList[len(closeList)-1]+gAccountMoney
             print ("Amount = "+ str(round(profit,2)) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)")
             print("\nAssets = " + str(gAmountAssets))
             print("Money = " + str(round(gAccountMoney,2)))
             print ("# of Trades: " + str(len(gProfitLossArray)))
             file.write("Amount = "+ str(round(profit,2)) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)\n")
             file.write("# of Trades: " + str(len(gProfitLossArray)))
-        sd = sd + 1
-        plotData()
-    dd = dd + 1
+            file.write("\n\n")
+        sd = sd + 1/24
+        #plotData()
+    dd = dd + 1/24
 file.close()
 
 #todo:

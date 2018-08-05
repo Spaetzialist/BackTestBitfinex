@@ -19,7 +19,7 @@ def buildDonchian(numberOfCandles, high, low):
 def buildDonchian2(days, timebase, high, low):
     donchianHighList = []
     donchianLowList = []
-    numberOfCandles = days*timebase
+    numberOfCandles = int(days*timebase)
     for i in range(0, len(high)):
         if (i>numberOfCandles):
             if (i%timebase ==0):
