@@ -48,6 +48,7 @@ buyShortDict = {}
 gEntryPrice = 0
 gEntryMoney = 0
 gProfitLossArray = []
+gSpreadArray = []
 gMoneyArray = []
 gDatesArray = []
 global l
@@ -110,6 +111,7 @@ def plotData():
     #plot profit
     plt.figure(2)
     plt.bar(gDatesArray, gProfitLossArray)
+    plt.plot(gDatesArray, gSpreadArray,'-',color="black")
     plt.plot(gDatesArray, gMoneyArray, '-')
     plt.xticks(rotation=90)
 
@@ -121,6 +123,7 @@ def buyLong(amount, price, fee, stop, index):
     global gStop
     global state
     global gEntryMoney
+    global gSpreadArray
     #money = amount*price*(1+(2*fee/100))
     if (amount<=gAccountMoney):
         gEntryMoney = gAccountMoney
@@ -129,6 +132,7 @@ def buyLong(amount, price, fee, stop, index):
         gStop = stop
         buyLongDict[index]=price
         print("go Long("  + str(index) +"): " + str(price) + " (" + str(round(gAmountAssets,3)) + " assets)")
+        gSpreadArray.append((1-donchianLow[index-1]/donchianHigh[index-1])*100)
     else:
         state = State.EQUAL
 
@@ -165,7 +169,7 @@ def sellShort(amount, price, fee, stop, index):
         gStop = stop
         sellShortDict[index]=price
         print ("go Short("  + str(index) +"): " + str(price) + " ("+ str(round(-gAmountAssets,3))+ " assets)")
-
+        gSpreadArray.append((1-donchianLow[index-1]/donchianHigh[index-1])*100)
     else:
         state = State.EQUAL
 
@@ -208,11 +212,11 @@ dateList, closeList, highList, lowList = utils.fillLists(l)
 #utils.saveData("dhighFile"+str(STOPDAYS*TIMEBASE),donchianHighStop)
 #utils.saveData("dlowFile"+str(STOPDAYS*TIMEBASE),donchianLowStop)
 
-dd = 5/24
+dd = 7
 file = open('output'+baseData+ '_'+time.strftime("%Y%m%d%H%M%S")+'.txt','w')
-while dd < 1:
-    sd = 1/24
-    while (sd < 1):
+while dd < 8:
+    sd = 3
+    while (sd < 4):
         DONCHIANDAYS = dd
         STOPDAYS = sd
         donchianHigh, donchianLow = utils.buildDonchian2(DONCHIANDAYS, TIMEBASE, highList, lowList)
@@ -283,9 +287,9 @@ while dd < 1:
             file.write("Amount = "+ str(round(profit,2)) + "("  + str(round((profit/STARTMONEY-1)*100,2)) + "%)\n")
             file.write("# of Trades: " + str(len(gProfitLossArray)))
             file.write("\n\n")
-        sd = sd + 1/24
-        #plotData()
-    dd = dd + 1/24
+        sd = sd + 1
+        plotData()
+    dd = dd + 1
 file.close()
 
 #todo:
