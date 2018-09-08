@@ -111,7 +111,7 @@ def plotData():
     #plot profit
     plt.figure(2)
     plt.bar(gDatesArray, gProfitLossArray)
-    plt.plot(gDatesArray, gSpreadArray,'-',color="black")
+    plt.plot(gDatesArray, gSpreadArray[:len(gDatesArray)],'-',color="black")
     plt.plot(gDatesArray, gMoneyArray, '-')
     plt.xticks(rotation=90)
 
@@ -293,7 +293,8 @@ while dd < 8:
 file.close()
 
 #todo:
-#Alles in ein Diagramm plotten mindestens Money und Profit
+
+#Check index 374588ff
 #Anzahl Trades mit ausgeben
 #hodl gegenüberstellen
 #Schleife über verschiedene Files
